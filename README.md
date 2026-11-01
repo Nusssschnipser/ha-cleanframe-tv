@@ -5,6 +5,8 @@ Lokale App- und Menüsteuerung für den **Samsung GQ65Q95TDTXZG**, Firmware
 
 Buttons: **CleanFrame, Samsung Home, Fernsehen, TV-Einstellungen, ARD Mediathek,
 ZDF**. Zusätzliche App-IDs können in der Bridge freigegeben werden.
+[Markdown-Karten und Streaming-Apps](docs/dashboard.md): fertiges Dashboard-Beispiel
+mit Netflix, Disney+, Apple TV, YouTube und Prime Video.
 
 **Wichtig:** HACS installiert die Home-Assistant-Integration. Zusätzlich muss die
 mitgelieferte Python-Bridge laufen: bevorzugt als HA-App, alternativ auf einem

@@ -1,0 +1,81 @@
+type: grid
+columns: 3
+square: false
+cards:
+  - type: markdown
+    content: "**CleanFrame**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_cleanframe
+  - type: markdown
+    content: "**Fernsehen**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_fernsehen
+  - type: markdown
+    content: "**Netflix**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_netflix
+  - type: markdown
+    content: "**Disney+**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_disney
+  - type: markdown
+    content: "**Apple TV**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_apple_tv
+  - type: markdown
+    content: "**YouTube**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_youtube
+  - type: markdown
+    content: "**Prime Video**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_prime_video
+  - type: markdown
+    content: "**ARD Mediathek**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_ard_mediathek
+  - type: markdown
+    content: "**ZDF**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_zdf
+  - type: markdown
+    content: "**Samsung Home**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_samsung_home
+  - type: markdown
+    content: "**TV-Einstellungen**"
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.cleanframe_tv_tv_einstellungen
