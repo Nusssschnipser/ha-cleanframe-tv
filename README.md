@@ -66,14 +66,20 @@ HACS-Standardkatalogs. Manuell kann `custom_components/cleanframe_tv` nach
 - Für Systemmenüs liefert diese HTTP-Schnittstelle keinen verwertbaren Status.
   Sichtprüfung von Samsung Home, Fernsehen und TV-Einstellungen steht noch aus.
 - 11 Bridge-/App-Tests und 8 Tests mit echten HA-2026.10.4-Klassen und simuliertem I/O
-  bestanden; nativer Helfer gebaut. Noch keine Installation in einer realen HA-Instanz.
+  bestanden; nativer Helfer gebaut.
+- HA-App und HACS-Integration 0.2.0 sind auf Home Assistant OS 18.4 (amd64/KVM),
+  Core 2026.10.4 installiert. Die App läuft mit Autostart; die Integration ist geladen
+  und alle sechs Buttons sind angelegt.
+- Der End-to-End-Test vom tatsächlichen HA-Host zum TV steht noch aus: Der TV war
+  beim Einrichten nicht erreichbar. Der bisherige Entwicklungsdienst ist deaktiviert.
 
 Diese erste Version bitte entsprechend als experimentell behandeln. Ergebnisse
 nicht mit den früheren, unabhängig geprüften CleanFrame-UI-Aktionen verwechseln.
 
 Die HA-App 0.2.0 wurde als Docker-Image gebaut und lokal gestartet; Status-API,
 SDB-Start, persistente Konfiguration und Ablehnung unzulässiger Apps wurden geprüft.
-Eine Installation/Migration auf den tatsächlichen HA-Host ist noch nicht erfolgt.
+Die Installation auf dem tatsächlichen HA-Host ist erfolgt; die native
+TV-Steuerung von dort ist noch nicht bestätigt.
 
 ## Zugriff und Fehler
 
