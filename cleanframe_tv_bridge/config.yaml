@@ -1,0 +1,24 @@
+name: CleanFrame TV Bridge
+version: "0.2.0"
+slug: cleanframe_tv_bridge
+description: Native App- und Menüstarts für den Samsung Q95T direkt von Home Assistant aus.
+url: https://github.com/Nusssschnipser/ha-cleanframe-tv
+arch:
+  - amd64
+startup: services
+boot: auto
+stage: experimental
+init: true
+host_network: true
+options:
+  tv_host: ""
+  ha_host: ""
+  port: 8767
+  additional_apps: []
+schema:
+  tv_host: str
+  ha_host: str
+  port: port
+  additional_apps:
+    - app_id: str
+      name: str

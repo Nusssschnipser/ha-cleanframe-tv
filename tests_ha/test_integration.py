@@ -64,3 +64,31 @@ async def test_http_timeout_no_retry():
 
 def test_no_url_injection():
     with pytest.raises(ValueError): BridgeClient(None, 'example.org/path', 8767)
+
+@pytest.mark.asyncio
+async def test_reconfigure_preserves_entry_and_changes_bridge():
+    from unittest.mock import patch
+    flow = ConfigFlow()
+    flow.hass = MagicMock()
+    entry = MagicMock(entry_id='preserved', data={'host': '192.0.2.1', 'port': 8767})
+    flow._get_reconfigure_entry = MagicMock(return_value=entry)
+    flow._async_current_entries = MagicMock(return_value=[entry])
+    flow.async_update_reload_and_abort = MagicMock(return_value={'type': 'abort'})
+    with patch('custom_components.cleanframe_tv.config_flow.async_get_clientsession'), patch('custom_components.cleanframe_tv.config_flow.BridgeClient') as cls:
+        cls.return_value.status = AsyncMock(return_value={})
+        result = await flow.async_step_reconfigure({'host': '192.0.2.2', 'port': 8767})
+    flow.async_update_reload_and_abort.assert_called_once_with(entry, unique_id='192.0.2.2:8767', data={'host': '192.0.2.2', 'port': 8767})
+
+@pytest.mark.asyncio
+async def test_reconfigure_failure_keeps_current_entry():
+    from unittest.mock import patch
+    flow = ConfigFlow()
+    flow.hass = MagicMock()
+    entry = MagicMock(entry_id='preserved', data={'host': '192.0.2.1', 'port': 8767})
+    flow._get_reconfigure_entry = MagicMock(return_value=entry)
+    flow.async_update_reload_and_abort = MagicMock()
+    with patch('custom_components.cleanframe_tv.config_flow.async_get_clientsession'), patch('custom_components.cleanframe_tv.config_flow.BridgeClient') as cls:
+        cls.return_value.status = AsyncMock(side_effect=BridgeError('offline'))
+        result = await flow.async_step_reconfigure({'host': '192.0.2.2', 'port': 8767})
+    assert result['errors'] == {'base': 'cannot_connect'}
+    flow.async_update_reload_and_abort.assert_not_called()

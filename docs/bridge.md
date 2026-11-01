@@ -1,5 +1,9 @@
 # Die lokale Steuerbrücke
 
+Für den Betrieb direkt auf Home Assistant siehe zuerst die
+[HA-App-Anleitung](../cleanframe_tv_bridge/DOCS.md). Die folgenden Schritte betreffen
+den alternativen separaten Rechner.
+
 HACS installiert nur `custom_components/cleanframe_tv`. Die Bridge läuft separat
 auf dem Rechner, der bereits als Entwicklerhost des TVs freigegeben ist.
 

@@ -7,10 +7,24 @@ Buttons: **CleanFrame, Samsung Home, Fernsehen, TV-Einstellungen, ARD Mediathek,
 ZDF**. Zusätzliche App-IDs können in der Bridge freigegeben werden.
 
 **Wichtig:** HACS installiert die Home-Assistant-Integration. Zusätzlich muss die
-mitgelieferte Python-Bridge auf dem bereits freigegebenen Entwicklerrechner laufen.
+mitgelieferte Python-Bridge laufen: bevorzugt als HA-App, alternativ auf einem
+freigegebenen separaten Rechner.
 Die Integration verbindet sich mit dieser Bridge; sie benötigt selbst kein SDB.
 Es wird kein Samsung-, SmartThings- oder Home-Assistant-Token benötigt. Der
 bestehende Entwicklerzugang und die Freigabe der HA-IP in der Bridge sind nötig.
+
+## Bridge direkt auf Home Assistant (ab 0.2.0)
+
+Für **Home Assistant OS/Supervised auf Intel/AMD 64 Bit** gibt es jetzt die
+[App CleanFrame TV Bridge](cleanframe_tv_bridge/DOCS.md). Dieselbe Repository-URL
+im **App-/Add-on-Store unter Repositories** hinzufügen und die App installieren.
+So braucht der laufende Betrieb keinen Entwicklungsserver mehr. ARM/Green/Pi
+werden von diesem SDB-Paket noch nicht unterstützt.
+
+Für den Umzug anschließend die HACS-Integration aktualisieren, HA neu starten
+und den Integrationseintrag **neu konfigurieren**: HA-LAN-IP statt bisheriger
+Bridge-IP eintragen. Vorhandene Button-IDs bleiben erhalten. Der TV muss den
+HA-Rechner als Entwicklerhost akzeptieren. Details stehen in der App-Anleitung.
 
 ## Installation über HACS
 
@@ -51,11 +65,15 @@ HACS-Standardkatalogs. Manuell kann `custom_components/cleanframe_tv` nach
   trotz erfolgreicher nativer Rückgabe. Sichtbares Funktionieren noch **nicht bestätigt**.
 - Für Systemmenüs liefert diese HTTP-Schnittstelle keinen verwertbaren Status.
   Sichtprüfung von Samsung Home, Fernsehen und TV-Einstellungen steht noch aus.
-- 8 Bridge-Tests und 6 Tests mit echten HA-2026.10.4-Klassen und simuliertem I/O
+- 11 Bridge-/App-Tests und 8 Tests mit echten HA-2026.10.4-Klassen und simuliertem I/O
   bestanden; nativer Helfer gebaut. Noch keine Installation in einer realen HA-Instanz.
 
 Diese erste Version bitte entsprechend als experimentell behandeln. Ergebnisse
 nicht mit den früheren, unabhängig geprüften CleanFrame-UI-Aktionen verwechseln.
+
+Die HA-App 0.2.0 wurde als Docker-Image gebaut und lokal gestartet; Status-API,
+SDB-Start, persistente Konfiguration und Ablehnung unzulässiger Apps wurden geprüft.
+Eine Installation/Migration auf den tatsächlichen HA-Host ist noch nicht erfolgt.
 
 ## Zugriff und Fehler
 

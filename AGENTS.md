@@ -13,3 +13,7 @@ Keine Tokens, privaten Adressen, SDK-/Firmware-Binaries oder Rohlogs committen.
 Tests: `python3 -m unittest discover -s tests -v`, `python3 scripts/check_repo.py`,
 `python -m pytest tests_ha -q` mit Home Assistant 2026.10.4; nativen Helfer bauen.
 Nach Änderungen Softwaretests, Geräteantwort und Sichtprüfung getrennt berichten.
+
+App-Build-Kontext nach Bridge-/Launcher-Änderungen mit `python3 scripts/prepare_addon.py`
+aktualisieren; CI prüft mit `--check`, dass die Kopien nicht abweichen.
+Den Entwicklungsserver nicht dauerhaft als Produktions-Bridge verwenden.
