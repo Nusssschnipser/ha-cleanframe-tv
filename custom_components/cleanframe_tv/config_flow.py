@@ -65,7 +65,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 host = str(ipaddress.IPv4Address(user_input["host"]))
                 port = user_input["port"]
-                controls = self._controls(user_input)
+                controls = self._controls({**entry.data, **user_input})
                 client = BridgeClient(async_get_clientsession(self.hass), host, port)
                 await client.status()
             except (ValueError, BridgeError):

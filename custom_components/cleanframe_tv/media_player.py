@@ -36,7 +36,7 @@ class CleanFramePlayer(MediaPlayerEntity):
     _attr_should_poll = False
 
     def __init__(self, entry):
-        self.source = entry.data["samsung_entity"]
+        self._source_entity_id = entry.data["samsung_entity"]
         self.mac = entry.data.get("wake_mac")
         self.broadcast = entry.data.get("wake_broadcast", "255.255.255.255")
         self._attr_unique_id = f"{entry.entry_id}_media_player"
@@ -47,7 +47,7 @@ class CleanFramePlayer(MediaPlayerEntity):
 
     async def async_added_to_hass(self):
         self.async_on_remove(async_track_state_change_event(
-            self.hass, [self.source], self._source_changed,
+            self.hass, [self._source_entity_id], self._source_changed,
         ))
 
     @callback
@@ -55,24 +55,24 @@ class CleanFramePlayer(MediaPlayerEntity):
         self.async_write_ha_state()
 
     @property
-    def source_state(self):
-        return self.hass.states.get(self.source)
+    def _source_state(self):
+        return self.hass.states.get(self._source_entity_id)
 
     @property
     def available(self):
-        state = self.source_state
+        state = self._source_state
         return bool(self.mac or (state and state.state != STATE_UNAVAILABLE))
 
     @property
     def state(self):
-        state = self.source_state
+        state = self._source_state
         if state is None or state.state in (STATE_UNAVAILABLE, STATE_UNKNOWN):
             return STATE_UNKNOWN
         return state.state
 
     @property
     def supported_features(self):
-        state = self.source_state
+        state = self._source_state
         features = MediaPlayerEntityFeature.TURN_ON if self.mac else MediaPlayerEntityFeature(0)
         if state and state.state not in (STATE_UNAVAILABLE, STATE_UNKNOWN):
             features |= MediaPlayerEntityFeature(state.attributes.get("supported_features", 0)) & FORWARDED_FEATURES
@@ -80,12 +80,12 @@ class CleanFramePlayer(MediaPlayerEntity):
 
     @property
     def volume_level(self):
-        state = self.source_state
+        state = self._source_state
         return state.attributes.get("volume_level") if state else None
 
     @property
     def is_volume_muted(self):
-        state = self.source_state
+        state = self._source_state
         return state.attributes.get("is_volume_muted") if state else None
 
     async def async_turn_on(self):
@@ -94,13 +94,13 @@ class CleanFramePlayer(MediaPlayerEntity):
         await self.hass.async_add_executor_job(send_wake_packet, self.mac, self.broadcast)
 
     async def _forward(self, service, feature, **data):
-        state = self.source_state
+        state = self._source_state
         if not state or state.state in (STATE_UNAVAILABLE, STATE_UNKNOWN, STATE_OFF):
             raise HomeAssistantError("Samsung TV is not online")
         if not (self.supported_features & feature):
             raise HomeAssistantError("Samsung TV does not support this action")
         await self.hass.services.async_call(
-            "media_player", service, {"entity_id": self.source, **data}, blocking=True,
+            "media_player", service, {"entity_id": self._source_entity_id, **data}, blocking=True,
         )
 
     async def async_turn_off(self):

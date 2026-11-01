@@ -9,7 +9,7 @@
           "port": "Port der Steuerbrücke",
           "samsung_entity": "Samsung-TV-Entität (optional)",
           "wake_mac": "TV-MAC-Adresse für Wake-on-LAN (optional)",
-          "wake_broadcast": "Wake-on-LAN-Broadcast-Adresse"
+          "wake_broadcast": "Wake-on-LAN-Ziel (TV-IP oder Broadcast)"
         }
       },
       "reconfigure": {
@@ -20,7 +20,7 @@
           "port": "Port der Steuerbrücke",
           "samsung_entity": "Samsung-TV-Entität (optional)",
           "wake_mac": "TV-MAC-Adresse für Wake-on-LAN (optional)",
-          "wake_broadcast": "Wake-on-LAN-Broadcast-Adresse"
+          "wake_broadcast": "Wake-on-LAN-Ziel (TV-IP oder Broadcast)"
         }
       }
     },

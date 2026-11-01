@@ -49,7 +49,8 @@ HACS-Standardkatalogs. Manuell kann `custom_components/cleanframe_tv` nach
 Unter **Einstellungen → Geräte & Dienste → CleanFrame TV → Neu konfigurieren**
 zusätzlich die vorhandene `samsungtv`-Mediaplayer-Entität auswählen und die
 MAC-Adresse der aktiven TV-Netzwerkschnittstelle für Wake-on-LAN eintragen.
-Die Broadcast-Adresse kann bei Bedarf an das eigene LAN angepasst werden.
+Als Wake-on-LAN-Ziel kann die TV-IP (Unicast) oder eine Broadcast-Adresse
+verwendet werden. Am Eigentümergerät wurde die direkte TV-IP konfiguriert.
 Die Samsung-Integration muss bereits gekoppelt sein. Bridge-App 0.2.0 genügt.
 
 Am selben CleanFrame-Gerät erscheint **TV-Steuerung** mit Einschalten,

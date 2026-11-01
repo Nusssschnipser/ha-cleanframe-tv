@@ -9,7 +9,7 @@
           "port": "Bridge port",
           "samsung_entity": "Samsung TV entity (optional)",
           "wake_mac": "TV MAC address for Wake-on-LAN (optional)",
-          "wake_broadcast": "Wake-on-LAN broadcast address"
+          "wake_broadcast": "Wake-on-LAN destination (TV IP or broadcast)"
         }
       },
       "reconfigure": {
@@ -20,7 +20,7 @@
           "port": "Bridge port",
           "samsung_entity": "Samsung TV entity (optional)",
           "wake_mac": "TV MAC address for Wake-on-LAN (optional)",
-          "wake_broadcast": "Wake-on-LAN broadcast address"
+          "wake_broadcast": "Wake-on-LAN destination (TV IP or broadcast)"
         }
       }
     },
