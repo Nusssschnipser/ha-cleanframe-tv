@@ -90,8 +90,14 @@ abgewiesen. Wake-on-LAN setzt die entsprechende Netzwerkbereitschaft am TV vorau
 - HA-App und HACS-Integration 0.2.0 sind auf Home Assistant OS 18.4 (amd64/KVM),
   Core 2026.10.4 installiert. Die App läuft mit Autostart; die Integration ist geladen
   und alle sechs Buttons sind angelegt.
-- Der End-to-End-Test vom tatsächlichen HA-Host zum TV steht noch aus: Der TV war
-  beim Einrichten nicht erreichbar. Der bisherige Entwicklungsdienst ist deaktiviert.
+- Integration 0.3.1 ergänzt den am selben Gerät angelegten Mediaplayer. Auf dem
+  tatsächlichen HA-Host getestet: Ausschalten und erneutes Einschalten, Lautstärke
+  8 → 9 → 8, Lauter/Leiser und Stummschaltung mit Rückstellung.
+- Wake-on-LAN wurde zuletzt mit der TV-IP als Ziel erfolgreich geprüft. Der TV
+  benötigte länger als das zehnsekündige Prüfzeitfenster für die On-Rückmeldung.
+- Native App-/Menüsteuerung vom HA-Host ist noch nicht bestätigt: SDB meldet einen
+  Befehlsfehler. Die sechs Buttons sind angelegt, aber noch nicht erfolgreich
+  vom HA-Host am TV ausgeführt. Der Entwicklungsdienst bleibt deaktiviert.
 
 Diese erste Version bitte entsprechend als experimentell behandeln. Ergebnisse
 nicht mit den früheren, unabhängig geprüften CleanFrame-UI-Aktionen verwechseln.
