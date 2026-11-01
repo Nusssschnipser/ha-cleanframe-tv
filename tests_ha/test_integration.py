@@ -109,8 +109,12 @@ async def test_player_wakes_without_source_and_never_toggles():
     assert player.available
     assert player.state == 'off'
     assert player.supported_features & F.TURN_ON
-    await player.async_turn_on()
+    from unittest.mock import patch
+    player._bridge.status = AsyncMock(return_value={'online':True,'compatible':True})
+    with patch('custom_components.cleanframe_tv.media_player.asyncio.sleep', new_callable=AsyncMock):
+        await player.async_turn_on()
     player.hass.async_add_executor_job.assert_awaited_once_with(send_wake_packet,TEST_MAC,'255.255.255.255')
+    player.hass.services.async_call.reset_mock()
     await player.async_turn_off()
     player.hass.services.async_call.assert_not_awaited()
     player.hass.states.get.return_value = None
@@ -154,3 +158,34 @@ async def test_flow_rejects_recursive_media_player_and_invalid_mac():
         registry.return_value.async_get.return_value = MagicMock(platform='samsungtv')
         with pytest.raises(ValueError): flow._controls({'samsung_entity':'media_player.samsung','wake_mac':'bad'})
         assert flow._controls({'samsung_entity':'media_player.samsung','wake_mac':'00-11-22-33-44-55'})['wake_mac']==TEST_MAC
+
+@pytest.mark.asyncio
+async def test_wake_repeats_only_wol_until_fresh_status_confirms_on():
+    from unittest.mock import patch
+    from custom_components.cleanframe_tv.media_player import CleanFramePlayer
+    entry = MagicMock(entry_id='test', data={'samsung_entity':'media_player.samsung','wake_mac':TEST_MAC})
+    player = CleanFramePlayer(entry)
+    player.hass = MagicMock()
+    player.hass.async_add_executor_job = AsyncMock()
+    player.hass.services.async_call = AsyncMock()
+    player._bridge.status = AsyncMock(side_effect=[{'online':False,'compatible':True},{'online':True,'compatible':True}])
+    with patch('custom_components.cleanframe_tv.media_player.asyncio.sleep', new_callable=AsyncMock):
+        await player.async_turn_on()
+    assert player.hass.async_add_executor_job.await_count == 2
+    player.hass.services.async_call.assert_awaited_once_with('homeassistant','update_entity',{'entity_id':'media_player.samsung'},blocking=True)
+    assert not player._waking
+
+@pytest.mark.asyncio
+async def test_wake_fails_honestly_if_tv_never_confirms():
+    from unittest.mock import patch
+    from custom_components.cleanframe_tv.media_player import CleanFramePlayer
+    entry = MagicMock(entry_id='test', data={'samsung_entity':'media_player.samsung','wake_mac':TEST_MAC})
+    player = CleanFramePlayer(entry)
+    player.hass = MagicMock()
+    player.hass.async_add_executor_job = AsyncMock()
+    player._bridge.status = AsyncMock(return_value={'online':False,'compatible':True})
+    with patch('custom_components.cleanframe_tv.media_player.asyncio.sleep', new_callable=AsyncMock):
+        with pytest.raises(HomeAssistantError, match='did not confirm'):
+            await player.async_turn_on()
+    assert player.hass.async_add_executor_job.await_count == 6
+    assert not player._waking

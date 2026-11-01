@@ -102,7 +102,10 @@ abgewiesen. Wake-on-LAN setzt die entsprechende Netzwerkbereitschaft am TV vorau
   SDB-Verbindung des Entwicklungsservers. Siehe [Migrationsablauf](docs/bridge.md).
 - Einschalten mit 0.3.1 war laut Nutzer nicht zuverlässig. Die früheren
   On-Statusmeldungen allein belegen keinen zuverlässigen Standby-Betrieb.
-  0.3.2 ergänzt einen begrenzten Paketstoß; erneute Standby-Prüfung erforderlich.
+  Ein einmaliger Paketstoß in 0.3.2 reichte im Standby-Test ebenfalls nicht.
+  0.3.3 sendet über ein begrenztes Zeitfenster erneut Wake-Pakete und bestätigt
+  den frischen TV-Status; ohne Bestätigung liefert die Aktion einen Fehler.
+  Das sind ausschließlich Wake-Pakete, keine wiederholten Power-Toggles.
 
 Diese erste Version bitte entsprechend als experimentell behandeln. Ergebnisse
 nicht mit den früheren, unabhängig geprüften CleanFrame-UI-Aktionen verwechseln.

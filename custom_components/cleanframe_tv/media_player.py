@@ -1,4 +1,5 @@
 """TV power and volume using Wake-on-LAN and an existing Samsung entity."""
+import asyncio
 import socket
 import time
 
@@ -9,6 +10,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_state_change_event
 
+from .api import BridgeError
 from .const import DOMAIN
 
 FORWARDED_FEATURES = (
@@ -45,6 +47,8 @@ class CleanFramePlayer(MediaPlayerEntity):
     def __init__(self, entry):
         self._source_entity_id = entry.data["samsung_entity"]
         self.mac = entry.data.get("wake_mac")
+        self._bridge = entry.runtime_data.client
+        self._waking = False
         self.broadcast = entry.data.get("wake_broadcast", "255.255.255.255")
         self._attr_unique_id = f"{entry.entry_id}_media_player"
         self._attr_device_info = DeviceInfo(
@@ -98,7 +102,31 @@ class CleanFramePlayer(MediaPlayerEntity):
     async def async_turn_on(self):
         if not self.mac:
             raise HomeAssistantError("No Wake-on-LAN address configured")
-        await self.hass.async_add_executor_job(send_wake_packet, self.mac, self.broadcast)
+        if self._waking:
+            raise HomeAssistantError("TV wake-up is already in progress")
+        self._waking = True
+        try:
+            # Wake packets are idempotent. Never repeat a native launch or power toggle.
+            for attempt in range(6):
+                await self.hass.async_add_executor_job(send_wake_packet, self.mac, self.broadcast)
+                await asyncio.sleep(3)
+                try:
+                    async with asyncio.timeout(3):
+                        status = await self._bridge.status()
+                    if status.get("online") is True and status.get("compatible") is True:
+                        await self.hass.services.async_call(
+                            "homeassistant", "update_entity",
+                            {"entity_id": self._source_entity_id}, blocking=True,
+                        )
+                        return
+                except (BridgeError, TimeoutError):
+                    pass
+            raise HomeAssistantError(
+                "Wake packets sent, but the TV did not confirm power on. "
+                "Check network standby settings and the Wake-on-LAN destination."
+            )
+        finally:
+            self._waking = False
 
     async def _forward(self, service, feature, **data):
         state = self._source_state
