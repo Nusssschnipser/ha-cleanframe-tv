@@ -136,10 +136,12 @@ async def test_player_forwards_only_to_selected_samsung_entity():
 def test_wake_packet_format():
     from unittest.mock import patch
     from custom_components.cleanframe_tv.media_player import send_wake_packet
-    with patch('custom_components.cleanframe_tv.media_player.socket.socket') as cls:
+    with patch('custom_components.cleanframe_tv.media_player.socket.socket') as cls, patch('custom_components.cleanframe_tv.media_player.time.sleep'):
         send_wake_packet(TEST_MAC,'192.0.2.255')
-    cls.return_value.__enter__.return_value.sendto.assert_called_once_with(
-        b'\xff'*6+bytes.fromhex('001122334455')*16,('192.0.2.255',9))
+    calls = cls.return_value.__enter__.return_value.sendto.call_args_list
+    assert len(calls) == 6
+    assert all(c.args[0] == b'\xff'*6+bytes.fromhex('001122334455')*16 for c in calls)
+    assert [c.args[1] for c in calls] == [('192.0.2.255',9),('255.255.255.255',9)]*3
 
 @pytest.mark.asyncio
 async def test_flow_rejects_recursive_media_player_and_invalid_mac():

@@ -56,7 +56,8 @@ Die Samsung-Integration muss bereits gekoppelt sein. Bridge-App 0.2.0 genügt.
 Am selben CleanFrame-Gerät erscheint **TV-Steuerung** mit Einschalten,
 Ausschalten und den von Samsung unterstützten Lautstärkeaktionen einschließlich
 Regler und Stummschaltung. Bestehende App-Buttons und ihre IDs bleiben erhalten.
-Das Einschalten sendet ein Magic Packet aus Home Assistant, keinen Power-Toggle.
+Das Einschalten sendet ab 0.3.2 einen kurzen, begrenzten Magic-Packet-Stoß
+aus Home Assistant an das konfigurierte Ziel und den Broadcast, keinen Power-Toggle.
 Bei fehlendem Samsung-Status wird der Zustand als unbekannt angezeigt; eine
 optimistische Einschaltbestätigung gibt es nicht. Offline-Lautstärkebefehle werden
 abgewiesen. Wake-on-LAN setzt die entsprechende Netzwerkbereitschaft am TV voraus.
@@ -95,9 +96,13 @@ abgewiesen. Wake-on-LAN setzt die entsprechende Netzwerkbereitschaft am TV vorau
   8 → 9 → 8, Lauter/Leiser und Stummschaltung mit Rückstellung.
 - Wake-on-LAN wurde zuletzt mit der TV-IP als Ziel erfolgreich geprüft. Der TV
   benötigte länger als das zehnsekündige Prüfzeitfenster für die On-Rückmeldung.
-- Native App-/Menüsteuerung vom HA-Host ist noch nicht bestätigt: SDB meldet einen
-  Befehlsfehler. Die sechs Buttons sind angelegt, aber noch nicht erfolgreich
-  vom HA-Host am TV ausgeführt. Der Entwicklungsdienst bleibt deaktiviert.
+- Native App-/Menüsteuerung vom HA-Host: Alle sechs Aufträge wurden nach der
+  Entwicklerhost-Migration erfolgreich angenommen; CleanFrame wurde sichtbar
+  zurückgelesen. Ursache war die alte Entwickler-IP plus eine weiterhin offene
+  SDB-Verbindung des Entwicklungsservers. Siehe [Migrationsablauf](docs/bridge.md).
+- Einschalten mit 0.3.1 war laut Nutzer nicht zuverlässig. Die früheren
+  On-Statusmeldungen allein belegen keinen zuverlässigen Standby-Betrieb.
+  0.3.2 ergänzt einen begrenzten Paketstoß; erneute Standby-Prüfung erforderlich.
 
 Diese erste Version bitte entsprechend als experimentell behandeln. Ergebnisse
 nicht mit den früheren, unabhängig geprüften CleanFrame-UI-Aktionen verwechseln.
@@ -105,7 +110,7 @@ nicht mit den früheren, unabhängig geprüften CleanFrame-UI-Aktionen verwechse
 Die HA-App 0.2.0 wurde als Docker-Image gebaut und lokal gestartet; Status-API,
 SDB-Start, persistente Konfiguration und Ablehnung unzulässiger Apps wurden geprüft.
 Die Installation auf dem tatsächlichen HA-Host ist erfolgt; die native
-TV-Steuerung von dort ist noch nicht bestätigt.
+App-/Menüsteuerung von dort wurde nach der Entwicklerhost-Migration bestätigt.
 
 ## Zugriff und Fehler
 

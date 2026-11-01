@@ -3,7 +3,11 @@
 Dieses Repository enthält die HACS-Integration und ihre separat betriebene SDB-Bridge.
 Vor Gerätezugriff README und docs/bridge.md lesen.
 Nur dokumentiertes Modell und Firmware akzeptieren; Guards nicht umgehen.
-Keine AUL-Aliase, vconf-Werte oder CleanFrame-Pakete verändern.
+Keine AUL-Aliase, Home-/Autostart-vconf-Werte oder CleanFrame-Pakete verändern.
+Für eine vom Besitzer beauftragte Migration des Entwicklerhosts darf ausschließlich
+`db/sdk/develop/ip` nach gesichertem Readback gezielt geändert werden. Vorherigen
+Wert lokal sichern; bestehenden SDB-Client danach trennen und vom Zielhost testen.
+Kein pauschales Zurücksetzen und keine gleichzeitigen SDB-Verbindungen.
 Befehle nie automatisch wiederholen, wenn ihr Ausgang unklar ist.
 SDB kann Aufträge wiederholen: persistente Nonce-Guards erhalten.
 Shell-Dateien auf dieser Firmware über `cat <Pfad>|bash` einspeisen; direktes

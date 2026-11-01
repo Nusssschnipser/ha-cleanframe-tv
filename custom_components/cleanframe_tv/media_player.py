@@ -1,5 +1,6 @@
 """TV power and volume using Wake-on-LAN and an existing Samsung entity."""
 import socket
+import time
 
 from homeassistant.components.media_player import MediaPlayerEntity, MediaPlayerEntityFeature
 from homeassistant.const import STATE_OFF, STATE_UNAVAILABLE, STATE_UNKNOWN
@@ -17,11 +18,17 @@ FORWARDED_FEATURES = (
 
 
 def send_wake_packet(mac, broadcast):
-    """Send a single standard magic packet; no power toggle or retry."""
+    """Send a bounded wake-only burst to survive standby packet loss."""
     address = bytes.fromhex(mac.replace(":", ""))
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        sock.sendto(b"\xff" * 6 + address * 16, (broadcast, 9))
+        packet = b"\xff" * 6 + address * 16
+        destinations = tuple(dict.fromkeys((broadcast, "255.255.255.255")))
+        for attempt in range(3):
+            for destination in destinations:
+                sock.sendto(packet, (destination, 9))
+            if attempt < 2:
+                time.sleep(0.3)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):

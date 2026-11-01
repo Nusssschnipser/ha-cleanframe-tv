@@ -91,3 +91,31 @@ SDK-Verzeichnisses. Pro Bridge-Prozess werden maximal 10.000 Aufträge angenomme
 Zum Entfernen: HA-Integration entfernen, Bridge-Dienst stoppen/deaktivieren,
 Integration in HACS deinstallieren und HA neu starten. Die bestehende native
 Home-Zuordnung und CleanFrame-App bleiben unverändert.
+
+## Entwicklerhost-Migration am Q95T
+
+Die Firmware prüft die SDB-Gegenstelle im Plugin `/usr/lib/libsdbd_plugin.so`:
+`_verify_peer_ip` vergleicht die Peer-IP exakt mit dem String
+`db/sdk/develop/ip`. Nachweis am Eigentümergerät: REA/Ghidra-Evidence
+`ev_bc88dde21c127c7f62b21c982d8e301b7e3a083a2961f5fcbcea41bd3cdf5018`.
+Das ist statische Analyse; zusätzlich wurde der erfolgreiche Wechsel zu HA
+am eingeschalteten TV geprüft. Binärdateien und Rohlogs bleiben privat.
+
+Bei einer ausdrücklich beauftragten Migration zuerst Entwickler-Modus und
+Host-IP lesen und den alten Wert lokal sichern. Dann im Entwicklerdialog die
+neue HA-LAN-IP setzen. Über den bereits autorisierten SDK-Shell-Zugang ist die
+entsprechende gezielte Änderung `vconftool set -f -t string db/sdk/develop/ip <HA_IP>`
+mit anschließendem `vconftool get db/sdk/develop/ip` möglich. Es werden keine
+Home-/Autostart-Schlüssel geändert. Diese Änderung gehört zur Einrichtung und
+wird von der Bridge nicht automatisch durchgeführt.
+
+**Anschließend den alten SDB-Client trennen.** Im Test schlug der neue HA-Connect
+auch nach korrigierter IP fehl, solange der Entwicklungsserver noch verbunden
+war. Erst nach `sdb disconnect <TV_IP>:26101` nahm der TV die HA-Verbindung an.
+Die Bridge sollte danach der einzige SDB-Client sein. Für eine Rücknahme muss
+die alte Host-IP vom noch autorisierten Host oder im TV-Entwicklerdialog wieder
+eingetragen werden; nicht zuerst den letzten funktionierenden Zugang trennen.
+
+Ab Bridge-App 0.2.1 nennen die privaten App-Logs die fehlgeschlagene SDB-Operation
+und deren Ausgabe. `SDB connect failed` ist noch kein fehlgeschlagener App-Start:
+in dieser Phase wurde der native Launcher nicht ausgeführt.
