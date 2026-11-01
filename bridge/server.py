@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import ipaddress
 import json
+import logging
 from pathlib import Path
 import re
 import subprocess
@@ -85,6 +86,10 @@ class Controller:
         except (OSError, subprocess.TimeoutExpired) as err:
             raise BridgeError('SDB unavailable or timed out; check developer access') from err
         if result.returncode:
+            # Fixed SDB operations only; never log shell payloads or credentials.
+            operation = "connect" if args[0] == "connect" else "push"
+            detail = (result.stderr + result.stdout).decode(errors="replace")[:2000]
+            logging.getLogger(__name__).error("SDB %s failed (exit %s): %s", operation, result.returncode, detail)
             raise BridgeError('SDB command failed; check developer access')
 
     def stage(self):
