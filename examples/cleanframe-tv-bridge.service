@@ -1,0 +1,17 @@
+[Unit]
+Description=CleanFrame TV native launch bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Adapt paths and User to the existing SDB developer host.
+User=YOUR_SDB_USER
+WorkingDirectory=/absolute/path/to/ha-cleanframe-tv
+ExecStart=/usr/bin/python3 -m bridge.server --config .local/bridge.json
+Restart=on-failure
+RestartSec=5
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "CleanFrame TV Native",
+        "description": "Adresse des Rechners mit der nativen Steuerbrücke eingeben, nicht die TV-Adresse. Home Assistant muss in der Brücke als erlaubter Client eingetragen sein. Kein Token erforderlich.",
+        "data": {"host": "IPv4-Adresse der Steuerbrücke", "port": "Port der Steuerbrücke"}
+      }
+    },
+    "error": {"cannot_connect": "Keine Verbindung. Adresse, Port und erlaubte Clients der Steuerbrücke prüfen."},
+    "abort": {"already_configured": "Diese Steuerbrücke ist bereits eingerichtet."}
+  }
+}

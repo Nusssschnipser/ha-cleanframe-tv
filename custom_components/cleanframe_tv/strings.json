@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "CleanFrame TV Native",
+        "description": "Enter the address of the computer running the native bridge, not the TV. Allow this Home Assistant host in the bridge configuration. No token is required.",
+        "data": {"host": "Bridge IPv4 address", "port": "Bridge port"}
+      }
+    },
+    "error": {"cannot_connect": "Cannot connect. Check the bridge address, port and client allowlist."},
+    "abort": {"already_configured": "This bridge is already configured."}
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "tv": "TV_IPV4",
+  "host": "BRIDGE_LAN_IPV4",
+  "sdb": "/absolute/path/to/sdb",
+  "listen": "BRIDGE_LAN_IPV4",
+  "port": 8767,
+  "allow_clients": ["HOME_ASSISTANT_IPV4"]
+}

@@ -1,0 +1,14 @@
+{
+  "domain": "cleanframe_tv",
+  "name": "CleanFrame TV Native",
+  "version": "0.1.1",
+  "codeowners": [
+    "@Nusssschnipser"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/Nusssschnipser/ha-cleanframe-tv",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "requirements": [],
+  "issue_tracker": "https://github.com/Nusssschnipser/ha-cleanframe-tv/issues"
+}
