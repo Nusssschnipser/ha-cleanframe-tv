@@ -6,7 +6,10 @@
         "description": "Adresse des Rechners mit der nativen Steuerbrücke eingeben, nicht die TV-Adresse. Home Assistant muss in der Brücke als erlaubter Client eingetragen sein. Kein Token erforderlich.",
         "data": {
           "host": "IPv4-Adresse der Steuerbrücke",
-          "port": "Port der Steuerbrücke"
+          "port": "Port der Steuerbrücke",
+          "samsung_entity": "Samsung-TV-Entität (optional)",
+          "wake_mac": "TV-MAC-Adresse für Wake-on-LAN (optional)",
+          "wake_broadcast": "Wake-on-LAN-Broadcast-Adresse"
         }
       },
       "reconfigure": {
@@ -14,12 +17,15 @@
         "description": "Adresse des Rechners mit der nativen Steuerbrücke eingeben, nicht die TV-Adresse. Home Assistant muss in der Brücke als erlaubter Client eingetragen sein. Kein Token erforderlich.",
         "data": {
           "host": "IPv4-Adresse der Steuerbrücke",
-          "port": "Port der Steuerbrücke"
+          "port": "Port der Steuerbrücke",
+          "samsung_entity": "Samsung-TV-Entität (optional)",
+          "wake_mac": "TV-MAC-Adresse für Wake-on-LAN (optional)",
+          "wake_broadcast": "Wake-on-LAN-Broadcast-Adresse"
         }
       }
     },
     "error": {
-      "cannot_connect": "Keine Verbindung. Adresse, Port und erlaubte Clients der Steuerbrücke prüfen."
+      "cannot_connect": "Keine Verbindung. Adresse, Port und erlaubte Clients der Steuerbrücke prüfen. Samsung-Entität und Wake-on-LAN-Adressen ebenfalls prüfen."
     },
     "abort": {
       "already_configured": "Diese Steuerbrücke ist bereits eingerichtet."

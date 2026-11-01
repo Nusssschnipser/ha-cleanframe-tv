@@ -10,7 +10,7 @@ ZDF**. Zusätzliche App-IDs können in der Bridge freigegeben werden.
 mitgelieferte Python-Bridge laufen: bevorzugt als HA-App, alternativ auf einem
 freigegebenen separaten Rechner.
 Die Integration verbindet sich mit dieser Bridge; sie benötigt selbst kein SDB.
-Es wird kein Samsung-, SmartThings- oder Home-Assistant-Token benötigt. Der
+Für App- und Menüsteuerung wird kein Samsung-, SmartThings- oder Home-Assistant-Token benötigt. Der
 bestehende Entwicklerzugang und die Freigabe der HA-IP in der Bridge sind nötig.
 
 ## Bridge direkt auf Home Assistant (ab 0.2.0)
@@ -44,6 +44,22 @@ Dieses Projekt ist ein benutzerdefiniertes HACS-Repository, kein Bestandteil des
 HACS-Standardkatalogs. Manuell kann `custom_components/cleanframe_tv` nach
 `/config/custom_components/cleanframe_tv` kopiert werden.
 
+## Ein/Aus und Lautstärke (Integration 0.3.0)
+
+Unter **Einstellungen → Geräte & Dienste → CleanFrame TV → Neu konfigurieren**
+zusätzlich die vorhandene `samsungtv`-Mediaplayer-Entität auswählen und die
+MAC-Adresse der aktiven TV-Netzwerkschnittstelle für Wake-on-LAN eintragen.
+Die Broadcast-Adresse kann bei Bedarf an das eigene LAN angepasst werden.
+Die Samsung-Integration muss bereits gekoppelt sein. Bridge-App 0.2.0 genügt.
+
+Am selben CleanFrame-Gerät erscheint **TV-Steuerung** mit Einschalten,
+Ausschalten und den von Samsung unterstützten Lautstärkeaktionen einschließlich
+Regler und Stummschaltung. Bestehende App-Buttons und ihre IDs bleiben erhalten.
+Das Einschalten sendet ein Magic Packet aus Home Assistant, keinen Power-Toggle.
+Bei fehlendem Samsung-Status wird der Zustand als unbekannt angezeigt; eine
+optimistische Einschaltbestätigung gibt es nicht. Offline-Lautstärkebefehle werden
+abgewiesen. Wake-on-LAN setzt die entsprechende Netzwerkbereitschaft am TV voraus.
+
 ## Funktionsumfang und Grenzen
 
 - Startet Apps über `aul_launch_app_for_uid` für den TV-Benutzer 5001.
@@ -52,7 +68,10 @@ HACS-Standardkatalogs. Manuell kann `custom_components/cleanframe_tv` nach
 - Samsung Home verwendet den **bereits vorhandenen** Alias `org.cleanframe.samsung-home`.
   Die Integration legt diesen Alias nicht an.
 - Verändert weder die Home-Tasten-Zuordnung noch CleanFrame-Dateien oder vconf-Werte.
-- Kein Einschalten, Lautstärkeregler oder allgemeiner Fernbedienungsersatz enthalten.
+- Ab Integration 0.3.0: optionaler Mediaplayer für Ein/Aus, Lautstärke und Stummschaltung.
+  Einschalten verwendet Wake-on-LAN. Ausschalten und Lautstärke verwenden die bereits
+  gekoppelte offizielle Samsung-TV-Integration; deren lokale Kopplung bleibt erforderlich.
+  In CleanFrame wird dafür kein zusätzlicher Token eingegeben.
 - Nur das dokumentierte Modell/Firmwarepaar ist freigegeben.
 - Ein bestätigter nativer Startauftrag ist **keine Bestätigung des sichtbaren Bildes**.
 

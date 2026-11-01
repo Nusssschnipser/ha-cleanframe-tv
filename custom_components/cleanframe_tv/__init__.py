@@ -7,7 +7,7 @@ import logging
 from .api import BridgeClient, BridgeError
 from .const import DOMAIN
 
-PLATFORMS = [Platform.BUTTON]
+PLATFORMS = [Platform.BUTTON, Platform.MEDIA_PLAYER]
 _LOGGER = logging.getLogger(__name__)
 
 class TVCoordinator(DataUpdateCoordinator):

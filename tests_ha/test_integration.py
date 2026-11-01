@@ -4,6 +4,8 @@ import importlib.metadata
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+
+TEST_MAC = ":".join(["00", "11", "22", "33", "44", "55"])
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.update_coordinator import UpdateFailed
 from custom_components.cleanframe_tv.api import BridgeClient, BridgeError
@@ -51,7 +53,7 @@ async def test_flow_shows_no_token_input():
     result = await flow.async_step_user()
     assert result['type'] == 'form'
     fields = {str(k) for k in result['data_schema'].schema}
-    assert fields == {'host', 'port'}
+    assert fields == {'host', 'port', 'samsung_entity', 'wake_mac', 'wake_broadcast'}
 
 @pytest.mark.asyncio
 async def test_http_timeout_no_retry():
@@ -92,3 +94,61 @@ async def test_reconfigure_failure_keeps_current_entry():
         result = await flow.async_step_reconfigure({'host': '192.0.2.2', 'port': 8767})
     assert result['errors'] == {'base': 'cannot_connect'}
     flow.async_update_reload_and_abort.assert_not_called()
+
+@pytest.mark.asyncio
+async def test_player_wakes_without_source_and_never_toggles():
+    from homeassistant.core import State
+    from homeassistant.components.media_player import MediaPlayerEntityFeature as F
+    from custom_components.cleanframe_tv.media_player import CleanFramePlayer, send_wake_packet
+    entry = MagicMock(entry_id='test', data={'samsung_entity':'media_player.samsung','wake_mac':TEST_MAC})
+    player = CleanFramePlayer(entry)
+    player.hass = MagicMock()
+    player.hass.async_add_executor_job = AsyncMock()
+    player.hass.services.async_call = AsyncMock()
+    player.hass.states.get.return_value = State('media_player.samsung','off',{'supported_features':int(F.TURN_OFF)})
+    assert player.available
+    assert player.state == 'off'
+    assert player.supported_features & F.TURN_ON
+    await player.async_turn_on()
+    player.hass.async_add_executor_job.assert_awaited_once_with(send_wake_packet,TEST_MAC,'255.255.255.255')
+    await player.async_turn_off()
+    player.hass.services.async_call.assert_not_awaited()
+    player.hass.states.get.return_value = None
+    assert player.state == 'unknown'
+    with pytest.raises(HomeAssistantError): await player.async_volume_up()
+
+@pytest.mark.asyncio
+async def test_player_forwards_only_to_selected_samsung_entity():
+    from homeassistant.core import State
+    from homeassistant.components.media_player import MediaPlayerEntityFeature as F
+    from custom_components.cleanframe_tv.media_player import CleanFramePlayer
+    entry = MagicMock(entry_id='test', data={'samsung_entity':'media_player.samsung'})
+    player = CleanFramePlayer(entry)
+    player.hass = MagicMock()
+    player.hass.services.async_call = AsyncMock()
+    player.hass.states.get.return_value = State('media_player.samsung','on',{'supported_features':int(F.VOLUME_SET|F.VOLUME_MUTE|F.TURN_OFF),'volume_level':.12})
+    assert player.volume_level == .12
+    await player.async_set_volume_level(.13)
+    player.hass.services.async_call.assert_awaited_once_with('media_player','volume_set',{'entity_id':'media_player.samsung','volume_level':.13},blocking=True)
+    with pytest.raises(HomeAssistantError): await player.async_volume_up()
+
+
+def test_wake_packet_format():
+    from unittest.mock import patch
+    from custom_components.cleanframe_tv.media_player import send_wake_packet
+    with patch('custom_components.cleanframe_tv.media_player.socket.socket') as cls:
+        send_wake_packet(TEST_MAC,'192.0.2.255')
+    cls.return_value.__enter__.return_value.sendto.assert_called_once_with(
+        b'\xff'*6+bytes.fromhex('001122334455')*16,('192.0.2.255',9))
+
+@pytest.mark.asyncio
+async def test_flow_rejects_recursive_media_player_and_invalid_mac():
+    from unittest.mock import patch
+    flow = ConfigFlow()
+    flow.hass = MagicMock()
+    with patch('custom_components.cleanframe_tv.config_flow.er.async_get') as registry:
+        registry.return_value.async_get.return_value = MagicMock(platform='cleanframe_tv')
+        with pytest.raises(ValueError): flow._controls({'samsung_entity':'media_player.cleanframe'})
+        registry.return_value.async_get.return_value = MagicMock(platform='samsungtv')
+        with pytest.raises(ValueError): flow._controls({'samsung_entity':'media_player.samsung','wake_mac':'bad'})
+        assert flow._controls({'samsung_entity':'media_player.samsung','wake_mac':'00-11-22-33-44-55'})['wake_mac']==TEST_MAC

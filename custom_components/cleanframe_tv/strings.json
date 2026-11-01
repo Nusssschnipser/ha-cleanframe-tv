@@ -6,7 +6,10 @@
         "description": "Enter the address of the computer running the native bridge, not the TV. Allow this Home Assistant host in the bridge configuration. No token is required.",
         "data": {
           "host": "Bridge IPv4 address",
-          "port": "Bridge port"
+          "port": "Bridge port",
+          "samsung_entity": "Samsung TV entity (optional)",
+          "wake_mac": "TV MAC address for Wake-on-LAN (optional)",
+          "wake_broadcast": "Wake-on-LAN broadcast address"
         }
       },
       "reconfigure": {
@@ -14,12 +17,15 @@
         "description": "Enter the address of the computer running the native bridge, not the TV. Allow this Home Assistant host in the bridge configuration. No token is required.",
         "data": {
           "host": "Bridge IPv4 address",
-          "port": "Bridge port"
+          "port": "Bridge port",
+          "samsung_entity": "Samsung TV entity (optional)",
+          "wake_mac": "TV MAC address for Wake-on-LAN (optional)",
+          "wake_broadcast": "Wake-on-LAN broadcast address"
         }
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect. Check the bridge address, port and client allowlist."
+      "cannot_connect": "Cannot connect. Check the bridge address, port and client allowlist. Also check the Samsung entity and Wake-on-LAN addresses."
     },
     "abort": {
       "already_configured": "This bridge is already configured."

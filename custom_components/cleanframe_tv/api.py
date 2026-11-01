@@ -22,6 +22,19 @@ class BridgeClient:
         try:
             async with asyncio.timeout(120):
                 async with self.session.request(method, self.url + path, json=data, allow_redirects=False) as response:
+                    if response.status == 503:
+                        error = (await response.json()).get("error")
+                        if error in {
+                            "SDB unavailable or timed out; check developer access",
+                            "SDB command failed; check developer access",
+                            "Cannot prepare launcher directory",
+                            "TV is off, unreachable or not the supported model",
+                            "No complete TV acknowledgement; execution state unknown, no automatic retry",
+                            "TV rejected the launch or request was already executed; check local evidence",
+                            "TV command already in progress",
+                            "Request already submitted; do not repeat an uncertain command",
+                        }:
+                            raise BridgeError(error)
                     if response.status != 200:
                         raise BridgeError(f"Bridge returned HTTP {response.status}; check developer access and IP allowlist")
                     result = await response.json()
