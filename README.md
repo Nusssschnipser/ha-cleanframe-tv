@@ -56,8 +56,10 @@ Die Samsung-Integration muss bereits gekoppelt sein. Bridge-App 0.2.0 genügt.
 Am selben CleanFrame-Gerät erscheint **TV-Steuerung** mit Einschalten,
 Ausschalten und den von Samsung unterstützten Lautstärkeaktionen einschließlich
 Regler und Stummschaltung. Bestehende App-Buttons und ihre IDs bleiben erhalten.
-Das Einschalten sendet ab 0.3.2 einen kurzen, begrenzten Magic-Packet-Stoß
-aus Home Assistant an das konfigurierte Ziel und den Broadcast, keinen Power-Toggle.
+Das Einschalten sendet aus Home Assistant Wake-Pakete an das konfigurierte Ziel
+und den Broadcast. Ab 0.3.3 werden sie bei Bedarf innerhalb eines begrenzten
+Zeitfensters erneut gesendet, bis ein frischer TV-On-Status bestätigt wird.
+Ohne Bestätigung meldet die Aktion einen Fehler. Es wird kein Power-Toggle gesendet.
 Bei fehlendem Samsung-Status wird der Zustand als unbekannt angezeigt; eine
 optimistische Einschaltbestätigung gibt es nicht. Offline-Lautstärkebefehle werden
 abgewiesen. Wake-on-LAN setzt die entsprechende Netzwerkbereitschaft am TV voraus.
@@ -106,6 +108,10 @@ abgewiesen. Wake-on-LAN setzt die entsprechende Netzwerkbereitschaft am TV vorau
   0.3.3 sendet über ein begrenztes Zeitfenster erneut Wake-Pakete und bestätigt
   den frischen TV-Status; ohne Bestätigung liefert die Aktion einen Fehler.
   Das sind ausschließlich Wake-Pakete, keine wiederholten Power-Toggles.
+- Abschlussprüfung 0.3.3: TV nach 72 Sekunden ohne Netzwerkantwort aus HA
+  eingeschaltet; frische TV-/HA-On-Bestätigung nach 4,8 Sekunden. Anschließend
+  CleanFrame über die HA-Bridge gestartet und als laufend/sichtbar gelesen.
+  Dies ist ein bestandener kontrollierter Test, keine Langzeit-Zuverlässigkeitsgarantie.
 
 Diese erste Version bitte entsprechend als experimentell behandeln. Ergebnisse
 nicht mit den früheren, unabhängig geprüften CleanFrame-UI-Aktionen verwechseln.
